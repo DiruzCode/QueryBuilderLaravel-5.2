@@ -14,83 +14,81 @@ class QueryBuilderController extends Controller
 
     public function index(Request $request)
     {   
+
+        if(!$request->model){
+            return response()->json("Error Model undefined");
+        }
+
         $req = $request;
 
-        if($req->model){
-            $limit = 10;
-            $order = "desc";
-            $orderBy = "date_created";
-            $model = "model";
-            $select = "*";
+        $limit = 10;
+        $order = "desc";
+        $orderBy = "date_created";
+        $model = "model";
+        $select = "*";
 
-            if($req->select){
-                $select = explode(',', $req->select);
-            }
+        if($req->select){
+            $select = explode(',', $req->select);
+        }
 
-            if($req->order){
-                $order = $req->order;
-            }
+        if($req->order){
+            $order = $req->order;
+        }
 
-            if($req->orderBy){
-                $orderBy = $req->orderBy;
-            }
+        if($req->orderBy){
+            $orderBy = $req->orderBy;
+        }
 
-            if($req->where){
-
-
-                $isArrayWhere = explode(',', $req->where);
-
-                if(is_array($isArrayWhere)){
+        if($req->where){
 
 
-                        $aryObj = array();
-                        foreach ($isArrayWhere as $key => $item) {
+            $isArrayWhere = explode(',', $req->where);
 
-                            $aryWhere = explode(' ', $item);
+            if(is_array($isArrayWhere)){
 
-                            array_push($aryObj, array($aryWhere[0],$aryWhere[1],$aryWhere[2]));
 
-                        }  
+                    $aryObj = array();
+                    foreach ($isArrayWhere as $key => $item) {
 
-                        $findModel = DB::table($req->model)
-                            ->select($select)
-                            ->where($aryObj)
-                            ->skip($req->offset)
-                            ->take($limit)
-                            ->orderBy($orderBy, $order)
-                            ->get();   
-                               
-                }else{
-                    $where = explode(' ', $req->where);
+                        $aryWhere = explode(' ', $item);
+
+                        array_push($aryObj, array($aryWhere[0],$aryWhere[1],$aryWhere[2]));
+
+                    }  
 
                     $findModel = DB::table($req->model)
-                            ->select($select)
-                            ->where($where[0], $where[1], $where[2])
-                            ->skip($req->offset)
-                            ->take($limit)
-                            ->orderBy($orderBy, $order)
-                            ->get(); 
-                }
-
-            }else{  
-
-                $findModel = DB::table($req->model)   
                         ->select($select)
+                        ->where($aryObj)
                         ->skip($req->offset)
                         ->take($limit)
                         ->orderBy($orderBy, $order)
-                        ->get();
+                        ->get();   
 
+            }else{
+                $where = explode(' ', $req->where);
+
+                $findModel = DB::table($req->model)
+                        ->select($select)
+                        ->where($where[0], $where[1], $where[2])
+                        ->skip($req->offset)
+                        ->take($limit)
+                        ->orderBy($orderBy, $order)
+                        ->get(); 
             }
 
+        }else{  
 
-             return response()->json($findModel);
-
-        }else{
-
-            return response()->json("Error Model undefined");
+            $findModel = DB::table($req->model)   
+                    ->select($select)
+                    ->skip($req->offset)
+                    ->take($limit)
+                    ->orderBy($orderBy, $order)
+                    ->get();
 
         }
+
+
+        return response()->json($findModel);
        
     }
 }
