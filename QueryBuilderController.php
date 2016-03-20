@@ -23,10 +23,6 @@ class QueryBuilderController extends Controller
             $model = "model";
             $select = "*";
 
-            if($req->limit){
-                $limit = $req->limit;
-            }
-
             if($req->select){
                 $select = explode(',', $req->select);
             }
