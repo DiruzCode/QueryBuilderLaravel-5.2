@@ -10,16 +10,8 @@ use DB;
 
 class QueryBuilderController extends Controller
 {
-    
-    public function __construct(){
 
-        $this->middleware('cors');
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {   
         $req = $request;
