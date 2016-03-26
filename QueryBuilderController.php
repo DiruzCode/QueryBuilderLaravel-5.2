@@ -78,16 +78,12 @@ class QueryBuilderController extends Controller
 
             if(is_array($isArrayJoin)){
 
-
                     $aryObj = array();
                     foreach ($isArrayJoin as $key => $itemJoin) {
 
                         $aryJoin = explode(' ', $itemJoin);
                         $Qry->join($aryJoin[0],$aryJoin[1],$aryJoin[2],$aryJoin[3]);
                     }  
-
-                    
-
             }else{
                 $aryJoin = explode(' ', $req->join);
                 $Qry->join($aryJoin[0],$aryJoin[1],$aryJoin[2],$aryJoin[3]);
