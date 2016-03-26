@@ -10,20 +10,20 @@ use DB;
 
 class QueryBuilderController extends Controller
 {
-
-
+    
     public function index(Request $request)
     {   
 
         if(!$request->model){
             return response()->json("Error Model undefined");
         }
+        
 
         $req = $request;
 
         $limit = 10;
         $order = "desc";
-        $orderBy = "date_created";
+        $orderBy = $req->model.".date_created";
         $model = "model";
         $select = "*";
 
@@ -38,6 +38,11 @@ class QueryBuilderController extends Controller
         if($req->orderBy){
             $orderBy = $req->orderBy;
         }
+
+
+        $Qry = DB::table($req->model)
+                    ->select($select);
+
 
         if($req->where){
 
@@ -56,36 +61,47 @@ class QueryBuilderController extends Controller
 
                     }  
 
-                    $findModel = DB::table($req->model)
-                        ->select($select)
-                        ->where($aryObj)
-                        ->skip($req->offset)
-                        ->take($limit)
-                        ->orderBy($orderBy, $order)
-                        ->get();   
+                    $Qry->where($aryObj);
 
             }else{
                 $where = explode(' ', $req->where);
+                $Qry->where($where[0], $where[1], $where[2]);
 
-                $findModel = DB::table($req->model)
-                        ->select($select)
-                        ->where($where[0], $where[1], $where[2])
-                        ->skip($req->offset)
-                        ->take($limit)
-                        ->orderBy($orderBy, $order)
-                        ->get(); 
             }
 
-        }else{  
+        }
 
-            $findModel = DB::table($req->model)   
-                    ->select($select)
-                    ->skip($req->offset)
-                    ->take($limit)
-                    ->orderBy($orderBy, $order)
-                    ->get();
+        if($req->join){
+
+
+            $isArrayJoin = explode(',', $req->join);
+
+            if(is_array($isArrayJoin)){
+
+
+                    $aryObj = array();
+                    foreach ($isArrayJoin as $key => $itemJoin) {
+
+                        $aryJoin = explode(' ', $itemJoin);
+                        $Qry->join($aryJoin[0],$aryJoin[1],$aryJoin[2],$aryJoin[3]);
+                    }  
+
+                    
+
+            }else{
+                $aryJoin = explode(' ', $req->join);
+                $Qry->join($aryJoin[0],$aryJoin[1],$aryJoin[2],$aryJoin[3]);
+
+            }
 
         }
+
+
+        $Qry->skip($req->offset);
+        $Qry->take($limit);
+        $Qry->orderBy($orderBy, $order);
+
+        $findModel = $Qry->get();
 
 
         return response()->json($findModel);
