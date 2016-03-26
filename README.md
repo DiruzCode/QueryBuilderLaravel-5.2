@@ -3,17 +3,26 @@ This is a controller for avoid trouble common the DRY (don't repeat yourself) wh
 
 You can use this controller for Querys Dynamic in the same controller, for example Wheres and Join Dynamic.
 
-Example in AngularJs
+
+## Example in AngularJs
+
+
+```js
 
 $Api.query({
-	model : 'myModel',
-	where : "title like %"+$scope.title+"%"
+    model : 'myModel',
+    where : "title like %"+$scope.title+"%"
 }).then(function(result){
-	$scope.model = JSON.parse(JSON.stringify(result.data));
-});	
+    $scope.model = JSON.parse(JSON.stringify(result.data));
+}); 
+
+
+```
 
 
 OR
+
+```js
 
 var getTypeUser = function()
 {
@@ -36,3 +45,6 @@ var getTypeUser = function()
     return deferred.promise;
     
 };
+
+
+```
