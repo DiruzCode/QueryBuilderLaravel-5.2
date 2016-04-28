@@ -1,4 +1,4 @@
-# QueryBuilderControlle
+# QueryBuilderController
 This is a controller for avoid trouble common the DRY (don't repeat yourself) when you need search information in you system.
 
 You can use this controller for Querys Dynamic in the same controller, for example Wheres and Join Dynamic.
@@ -14,7 +14,7 @@ $Api.query({
     where : "title like %"+$scope.title+"%"
 }).then(function(result){
     $scope.model = JSON.parse(JSON.stringify(result.data));
-}); 
+});
 
 
 ```
@@ -43,7 +43,7 @@ var getTypeUser = function()
 
 
     return deferred.promise;
-    
+
 };
 
 
